@@ -16,6 +16,7 @@
 ```
 VITE_APP_URL=http://localhost:5000
 ```
+ถ้าหากเกิดปัญหาไม่สามารถเชื่อม BE ลองสร้าง .env.local แทน .env
 จากนั้นไปที่ cmd ใน VScode แล้วใส่ command
 ```cmd
 npm install
@@ -28,5 +29,6 @@ npm run backend
 ```cmd
 npm run dev
 ```
+
 
 
