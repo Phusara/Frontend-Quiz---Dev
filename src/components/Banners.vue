@@ -3,6 +3,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 const slider = ref(null)
+const isHovered = ref(false)
 
 const banners = [
   { title: 'Banner 1', image: '../src/assets/image.png' },
@@ -20,21 +21,25 @@ const scrollInterval = ref(null)
 const autoScrollInterval = ref(null)
 
 const scrollLeft = () => {
-  slider.value?.scrollBy({ left: -10, behavior: 'smooth' })
+  if (slider.value) {
+    slider.value.scrollBy({ left: -10, behavior: 'smooth' })
+  }
 }
 
 const scrollRight = () => {
-  slider.value?.scrollBy({ left: 10, behavior: 'smooth' })
+  if (slider.value) {
+    slider.value.scrollBy({ left: 10, behavior: 'smooth' })
+  }
 }
 
 const startScrollLeft = () => {
   if (scrollInterval.value) return
-  scrollInterval.value = setInterval(scrollLeft, 16)
+  scrollInterval.value = setInterval(scrollLeft, 50) 
 }
 
 const startScrollRight = () => {
   if (scrollInterval.value) return
-  scrollInterval.value = setInterval(scrollRight, 16)
+  scrollInterval.value = setInterval(scrollRight, 50) 
 }
 
 const stopScroll = () => {
@@ -47,15 +52,19 @@ const stopScroll = () => {
 const startAutoScroll = () => {
   if (autoScrollInterval.value) return
   autoScrollInterval.value = setInterval(() => {
-    if (!slider.value) return
-    // If at the end, reset scrollLeft to 0
+    if (!slider.value || isHovered.value) return
+    
     const maxScrollLeft = slider.value.scrollWidth - slider.value.clientWidth
-    if (slider.value.scrollLeft >= maxScrollLeft - 2) {
+    
+    // Check if banner at the end (with a small tolerance)
+    if (slider.value.scrollLeft >= maxScrollLeft - 5) {
+      // Reset to beginning
       slider.value.scrollTo({ left: 0, behavior: 'auto' })
     } else {
-      slider.value.scrollBy({ left: 2, behavior: 'smooth' })
+      
+      slider.value.scrollBy({ left: 1, behavior: 'auto' })
     }
-  }, 16)
+  }, 50) 
 }
 
 const stopAutoScroll = () => {
@@ -65,17 +74,33 @@ const stopAutoScroll = () => {
   }
 }
 
+const handleMouseEnter = () => {
+  isHovered.value = true
+}
+
+const handleMouseLeave = () => {
+  isHovered.value = false
+}
+
 onMounted(() => {
-  startAutoScroll()
+  // Add a small delay to ensure DOM ready
+  setTimeout(() => {
+    startAutoScroll()
+  }, 100)
 })
 
 onBeforeUnmount(() => {
   stopAutoScroll()
+  stopScroll()
 })
 </script>
 
 <template>
-  <div class="relative">
+  <div 
+    class="relative"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+  >
     <!-- Scrollable container -->
     <div
       ref="slider"
@@ -117,13 +142,12 @@ onBeforeUnmount(() => {
   </div>
 </template>
 <style scoped>
-/* Hide scrollbar for Chrome, Safari and Opera */
 .flex::-webkit-scrollbar {
   display: none;
 }
-/* Hide scrollbar for IE, Edge and Firefox */
+
 .flex {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 </style>
