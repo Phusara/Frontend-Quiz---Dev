@@ -188,33 +188,33 @@ const deleteSelectedBooks = async () => {
                   Name:
                   <input
                     v-model="editBook.name"
-                    class="border rounded w-full px-2 py-1 mt-1"
+                    class="w-full px-2 py-1 mt-1 input"
                   />
                 </label>
                 <label class="noto-sans-thai block mb-2">
                   Author:
                   <input
                     v-model="editBook.author"
-                    class="border rounded w-full px-2 py-1 mt-1"
+                    class="w-full px-2 py-1 mt-1 input"
                   />
                 </label>
                 <label class="noto-sans-thai block mb-4">
                   Date:
                   <input
                     v-model="editBook.date"
-                    class="border rounded w-full px-2 py-1 mt-1"
+                    class="w-full px-2 py-1 mt-1 input"
                   />
                 </label>
                 <div class="flex justify-end gap-2">
                   <button
                     @click="closeEditModal"
-                    class="px-3 py-1 rounded bg-gray-300"
+                    class="px-3 py-1 btn btn-error text-white"
                   >
                     Cancel
                   </button>
                   <button
                     @click="saveEdit"
-                    class="px-3 py-1 rounded bg-blue-500 text-white"
+                    class="px-3 py-1 btn btn-success text-white"
                   >
                     Save
                   </button>
