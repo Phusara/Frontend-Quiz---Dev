@@ -1,29 +1,31 @@
 # Dek-D_Quiz
 
-This template should help get you started developing with Vue 3 in Vite.
+โปรเจคนี้ทำขึ้นมาสำหรับ Quiz Frontend 
 
-## Recommended IDE Setup
+# Tool
+- Vue 3
+- VScode
+- Tailwind
+- Daisy UI
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+## Project Run 
+วิธีการ Run project ทำตามดังนี้
+สร้างไฟล์ในไฟล์ .env ใน path ที่ clone ลงมาแล้วพิมพ์
+```
+VITE_APP_URL=http://localhost:5000
+```
+จากนั้นไปที่ cmd ใน VScode แล้วใส่ command
+```cmd
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+```cmd
+npm run backend
+```
 
-```sh
+```cmd
 npm run dev
 ```
 
-### Compile and Minify for Production
 
-```sh
-npm run build
-```
