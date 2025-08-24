@@ -7,6 +7,7 @@
 - VScode
 - Tailwind
 - Daisy UI
+- Json server
 
 
 ## Project Run 
