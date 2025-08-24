@@ -98,9 +98,10 @@ onBeforeUnmount(() => {
       @touchstart="startScrollLeft"
       @touchend="stopScroll"
       @click="scrollLeft"
-      class="absolute left-2 top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-2 rounded-full z-10"
+      class="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full text-[38px] z-10"
     >
-      ←
+            <i class="fa fa-arrow-left"></i>
+
     </button>
     <button
       @mousedown="startScrollRight"
@@ -109,9 +110,9 @@ onBeforeUnmount(() => {
       @touchstart="startScrollRight"
       @touchend="stopScroll"
       @click="scrollRight"
-      class="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-2 rounded-full z-10"
+      class="absolute right-2 top-1/2 -translate-y-1/2  p-2 rounded-full text-[38px] z-10"
     >
-      →
+      <i class="fa fa-arrow-right"></i>
     </button>
   </div>
 </template>

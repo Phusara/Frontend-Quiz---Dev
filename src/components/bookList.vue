@@ -11,7 +11,6 @@ import {
 const editMode = ref(false);
 const books = ref([]);
 const bookbyID = ref(null);
-// Fetch a book by its ID from the backend
 const fetchBookById = async (id) => {
   try {
     const book = await getItemById(itemUrl, id);
@@ -35,18 +34,15 @@ onMounted(async () => {
     console.log(books.value);
   } catch (error) {
     console.error("Failed to fetch books:", error);
-    // Optionally show a user-friendly message in the UI
   }
 });
 
 const openEditModal = async (book) => {
-  // Always fetch the latest book data by ID
   const latestBook = await fetchBookById(book.id);
   if (latestBook) {
     editBook.value = { ...latestBook };
     showEditModal.value = true;
   } else {
-    // Optionally show a user-friendly message in the UI
     console.error("Book not found for editing.");
   }
 };
@@ -58,12 +54,13 @@ const openAddModal = () => {
 
 const saveAdd = async () => {
   try {
-    const added = await addItem(itemUrl, newBook.value);
+  const maxId = books.value.length > 0 ? Math.max(...books.value.map(b => Number(b.id))) : 0;
+  const bookToAdd = { ...newBook.value, id: String(maxId + 1) };
+    const added = await addItem(itemUrl, bookToAdd);
     books.value.push(added);
     closeAddModal();
   } catch (error) {
     console.error("Failed to add book:", error);
-    // Optionally show a user-friendly message in the UI
   }
 };
 
@@ -93,7 +90,6 @@ const closeEditModal = () => {
 
 const saveEdit = async () => {
   try {
-    // Fetch the latest book before editing
     const bookToEdit = await fetchBookById(editBook.value.id);
     if (!bookToEdit) {
       console.error("Book not found for editing.");
@@ -107,13 +103,11 @@ const saveEdit = async () => {
     closeEditModal();
   } catch (error) {
     console.error("Failed to edit book:", error);
-    // Optionally show a user-friendly message in the UI
   }
 };
 
 const deleteSelectedBooks = async () => {
   try {
-    // Delete each selected book by id, fetching each before deleting
     for (const id of selectedBooks.value) {
       const bookToDelete = await fetchBookById(id);
       if (bookToDelete) {
@@ -122,25 +116,23 @@ const deleteSelectedBooks = async () => {
         console.error(`Book with id ${id} not found for deletion.`);
       }
     }
-    // Remove deleted books from local list
     books.value = books.value.filter(
       (book) => !selectedBooks.value.includes(book.id)
     );
     selectedBooks.value = [];
   } catch (error) {
     console.error("Failed to delete selected books:", error);
-    // Optionally show a user-friendly message in the UI
   }
 };
 </script>
 
 <template>
-  <div class="h-full w-full 2 p-2 border rounded shadow bg-white">
+  <div class="h-full w-full 2 p-2">
     <div class="flex w-full relative">
-      <div class="pl-6">
+      <div class="pl-10">
       <button class="btn btn-soft btn-primary" @click="openAddModal">Add</button>
     </div>
-      <div class="absolute right-0 pr-6">
+      <div class="absolute right-0 pr-10">
         <button class="btn btn-soft btn-warning" @click="toggleEditMode">
         {{ editMode ? "Cancel" : "Edit" }}
       </button>
@@ -149,11 +141,12 @@ const deleteSelectedBooks = async () => {
           class="ml-2 bg-red-500 text-white px-2 py-1 rounded"
           @click="deleteSelectedBooks"
         >
-          Delete Selected
+          Delete ({{ selectedBooks.length }}) <i class="fa fa-trash-o"></i>
         </button>
       </span>
     </div>
     </div>
+    <p class="text-sm text-gray-400 noto-sans-thai pt-2 pl-10">จำนวนทั้งหมด {{ books.length }} รายการ</p>
     <div class="flex flex-wrap justify-around">
       <div
         v-for="(book, index) in books"
@@ -163,13 +156,14 @@ const deleteSelectedBooks = async () => {
         <div class="flex relative">
           <img
             src="/src/assets/bookcover.jpg"
-            class="w-[35%]"
+            class="w-[35%] rounded-md"
             alt="Book Cover"
           />
           <div class="pl-6">
-            <p>{{ book.name }}</p>
-            <p class="pt-4">Author: {{ book.author }}</p>
-            <p class="absolute bottom-0">Relese {{ book.date }}</p>
+            <p class="noto-sans-thai text-lg font-semibold
+">{{ book.name }}</p>
+            <p class="pt-2 noto-sans-thai">Author: {{ book.author }}</p>
+            <p class="absolute bottom-0 noto-sans-thai text-gray-400 text-sm ">Release: {{ book.date }}</p>
           </div>
       <div v-if="editMode" class="absolute flex flex-col top-2 right-2">
   <input
@@ -189,22 +183,22 @@ const deleteSelectedBooks = async () => {
               class="fixed inset-0 bg-white/20 flex items-center justify-center z-50"
             >
               <div class="bg-white p-6 rounded shadow w-80">
-                <h2 class="text-lg font-bold mb-4">Edit Book</h2>
-                <label class="block mb-2">
+                <h2 class="noto-sans-thai text-lg font-bold mb-4">Edit Book</h2>
+                <label class="noto-sans-thai block mb-2">
                   Name:
                   <input
                     v-model="editBook.name"
                     class="border rounded w-full px-2 py-1 mt-1"
                   />
                 </label>
-                <label class="block mb-2">
+                <label class="noto-sans-thai block mb-2">
                   Author:
                   <input
                     v-model="editBook.author"
                     class="border rounded w-full px-2 py-1 mt-1"
                   />
                 </label>
-                <label class="block mb-4">
+                <label class="noto-sans-thai block mb-4">
                   Date:
                   <input
                     v-model="editBook.date"
@@ -231,42 +225,40 @@ const deleteSelectedBooks = async () => {
         </div>
       </div>
     </div>
-
-  <!-- Add Book Modal -->
   <div
     v-if="showAddModal"
   class="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
   >
     <div class="bg-white p-6 rounded shadow w-80">
-      <h2 class="text-lg font-bold mb-4">Add Book</h2>
-      <label class="block mb-2">
+      <h2 class="noto-sans-thai text-lg font-bold mb-4">Add Book</h2>
+      <label class="noto-sans-thai block mb-2">
         Name:
         <input
           v-model="newBook.name"
-          class="border rounded w-full px-2 py-1 mt-1"
+          class="border rounded w-full px-2 py-1 mt-1 input"
         />
       </label>
-      <label class="block mb-2">
+      <label class="noto-sans-thai block mb-2 ">
         Author:
         <input
           v-model="newBook.author"
-          class="border rounded w-full px-2 py-1 mt-1"
+          class="border rounded w-full px-2 py-1 mt-1 input"
         />
       </label>
-      <label class="block mb-4">
+      <label class="noto-sans-thai block mb-4">
         Date:
         <input
           v-model="newBook.date"
-          class="border rounded w-full px-2 py-1 mt-1"
+          class="border rounded w-full px-2 py-1 mt-1 input"
         />
       </label>
       <div class="flex justify-end gap-2">
-        <button @click="closeAddModal" class="px-3 py-1 rounded bg-gray-300">
+        <button @click="closeAddModal" class="px-3 py-1 btn btn-error text-white">
           Cancel
         </button>
         <button
           @click="saveAdd"
-          class="px-3 py-1 rounded bg-green-500 text-white"
+          class="px-3 py-1 text-white btn btn-success"
         >
           Add
         </button>
@@ -274,4 +266,8 @@ const deleteSelectedBooks = async () => {
     </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.noto-sans-thai {
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+</style>
